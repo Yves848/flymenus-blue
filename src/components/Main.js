@@ -6,10 +6,6 @@ import Plats from '../components/Plats/Plats';
 import Menus from '../components/Menus/Menus';
 import Programmes from '../components/Programmes/Programmes';
 import Login from '../components/Login/Login'
-import 'primereact/resources/themes/nova-light/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-
 
 const Main = () => {
   return(

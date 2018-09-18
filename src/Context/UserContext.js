@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
-const AppContext = new React.createContext();
-class AppProvider extends Component {
+
+export const AppContext = new React.createContext();
+
+export class AppProvider extends Component {
    
     render() { 
         return (<AppContext.AppProvider>
@@ -9,5 +11,4 @@ class AppProvider extends Component {
         </AppContext.AppProvider> );
     }
 }
- 
-export default AppProvider;
+

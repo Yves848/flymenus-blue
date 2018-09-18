@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import Aux from '../hoc/_Aux';
 import { Link } from 'react-router-dom';
-import {UserContext} from '../Context/UserContext'
 import PropTypes from 'prop-types';
 import menu from '../assets/images/menu.png';
 import plat from '../assets/images/dish.png';
 import menus from '../assets/images/Menus.png';
 import programme from '../assets/images/Programme.png';
-import { Toolbar } from 'primereact/toolbar';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Panel } from 'primereact/panel';
-import '../primeflex.css';
+import { AppContext } from '../Context/UserContext';
+import 'flexboxgrid';
+import {
+  Alignment,
+  Button,
+  Classes,
+  Colors,
+  H5,
+  Navbar,
+  NavbarDivider,
+  NavbarGroup,
+  NavbarHeading,
+  Switch,
+} from '@blueprintjs/core';
+const { Consumer } = AppContext;
 
 const btnPlat = (
   <div className="row middle-sm" style={{ width: 'auto' }}>
@@ -30,11 +39,11 @@ const btnMenus = (
   </div>
 );
 const btnProgrammes = (
-  <div className="p-grig" style={{ width: '100px' }}>
-    <div className="p-col ">
+  <div className="row middle-sm" style={{ width: 'auto' }}>
+    <div className="col-sm-4">
       <img style={{ height: '24px' }} src={programme} />
     </div>
-    <div className="p-col">Programmes</div>
+    <div className="col-sm-8">Programmes</div>
   </div>
 );
 
@@ -52,49 +61,69 @@ class Header extends Component {
 
     return (
       <Aux>
-        <UserContext.Consumer>
-        <Toolbar>
-          <div className="p-toolbar-group-left">
-            <span style={{ marginRight: '.25em' }}>FlyMenus</span>
-            <i
-              className="pi pi-bars p-toolbar-separator"
-              style={{ marginRight: '.25em' }}
-            />
-            <Button
-              className="p-button-raised p-button-secondary"
-              label="Programmes"
-              style={{ marginRight: '.25em' }}
-              onClick={() => this.redirect('programmes')}
-            />
-            <Button
-              className="p-button-raised p-button-secondary"
-              label="Menus"
-              style={{ marginRight: '.25em' }}
-              onClick={() => this.redirect('menus')}
-            />
-            <Button
-              className="p-button-raised p-button-secondary"
-              label="Plats"
-              style={{ marginRight: '.25em' }}
-              onClick={() => this.redirect('plats')}
-            />
-          </div>
-          <div className="p-toolbar-group-right">
-            {user ? (
-              <Button label="Logout" icon="pi pi-power-off" style={{ marginLeft: 4 }} />
+        <Consumer>
+          {context => {
+            //console.log(context);
+            const btnLog = context.user ? (
+              <div className="row middle-sm" style={{ width: 'auto' }}>
+                <div className="col-sm-4">
+                  <img style={{ height: '24px' }} src={programme} />
+                </div>
+                <div className="col-sm-8">Logout</div>
+              </div>
             ) : (
-              <Button
-                label="Connexion"
-                icon="pi pi-power-off"
-                style={{ marginLeft: 4 }}
-                onClick={this.props.handleLogin}
-              />
-            )}
-          </div>
-        </Toolbar>
-        </UserContext.Consumer>
+              <div className="row middle-sm" style={{ width: 'auto' }}>
+                <div className="col">
+                  <img style={{ height: '24px' }} src={programme} />
+                </div>
+                <div className="col">Enregistrement / Connexion</div>
+              </div>
+            );
+            return (
+              <Navbar>
+                {context.user ? (
+                <NavbarGroup align={Alignment.LEFT}>
+                  <NavbarHeading>FlyMenus</NavbarHeading>
+                  <NavbarDivider />
+                  
+                  <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('programmes')}
+                  >
+                    {btnProgrammes}
+                  </Button>
+                  <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('menus')}
+                  >
+                    {btnMenus}
+                  </Button>
+                  <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('plats')}
+                  >
+                    {btnPlat}
+                  </Button>
+                  
+                </NavbarGroup>)
+                :
+                <NavbarGroup align={Alignment.LEFT}>
+                  <NavbarHeading>FlyMenus</NavbarHeading>
+                  </NavbarGroup>
+              }
+                <NavbarGroup align={Alignment.RIGHT}>
+                  <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('login')}
+                  >
+                    {btnLog}
+                  </Button>
+                </NavbarGroup>
+              </Navbar>
+            );
+          }}
+        </Consumer>
       </Aux>
-      
     );
   }
 }
