@@ -6,6 +6,20 @@ import 'flexboxgrid';
 
 const { Consumer } = AppContext;
 
+const platsListStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexWrap: 'wrap',
+  justifyContent: 'Center',
+};
+
+const platCardStyle = {
+  maxWidth: '30%',
+  minWidth: '250px',
+  flex: '1',
+  margin: '5px',
+};
+
 class Plats extends Component {
   constructor(props) {
     super(props);
@@ -58,12 +72,13 @@ class Plats extends Component {
 
     const cards = Plats.map((plat, i) => {
       return (
-        <div className="col-lg-2 col-sm-4 col-xs-6" key={i}>
-          <Card><span className="bp3-tag bp3-large bp3-intent-primary" >{plat.Nom}</span>
-          <div>
-          <img src={plat.Image} style={{height: "150px", width: "150px"}} alt=""/>
-          </div>
-          </Card>
+        <div
+          key={i}
+          style={platCardStyle}
+          className="bp3-card bp3-elevation-0 bp3-interactive"
+        >
+          <h5>{plat.Nom}</h5>
+          <img src={plat.Image} style={{ minWidth: '230px', maxWidth: '90%', maxHeight: "180px" }} alt="" />
         </div>
       );
     });
@@ -75,13 +90,11 @@ class Plats extends Component {
         <div className="row">
           <div className="col-sm-2 col-lg-1">Menu</div>
           <div className="col-sm-10 col-lg-11">
-          Plats
-            <div
-              className="box"
-              style={{ flexWrap: 'wrap', flexDirection: 'column', overflowY: 'auto' }}
-            >
-             
-              <div className="row" >{cards}</div>
+            Plats
+            <div style={platsListStyles}>
+              <div className="row" style={{ maxHeight: '80vh', overflow: 'auto' }}>
+                {cards}
+              </div>
             </div>
           </div>
         </div>

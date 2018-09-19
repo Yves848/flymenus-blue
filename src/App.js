@@ -59,7 +59,7 @@ class App extends Component {
 
   render() {
     return (
-      <Card className="bp3-dark" style={{ height: '100vh' }}>
+      <Card className="bp3-dark" >
         
         <Provider value={initialState}>
           <Header/>
