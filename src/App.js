@@ -4,7 +4,8 @@ import Main from './components/Main';
 import Header from './components/Header';
 import Aux from './hoc/_Aux';
 import PropTypes from 'prop-types';
-import { Card, Spinner } from '@blueprintjs/core';
+//import { Card, Spinner } from '@blueprintjs/core';
+import Paper from '@material-ui/core/Paper';
 import { AppContext } from './Context/UserContext';
 import { app,base } from './components/config/base';
 
@@ -59,7 +60,8 @@ class App extends Component {
 
   render() {
     return (
-      <Card className="bp3-dark" style={{ height: '100vh' }}>
+      //<Card className="bp3-dark" style={{ height: '100vh' }}>
+      <Paper elevation0>
         
         <Provider value={initialState}>
           <Header/>
@@ -73,13 +75,13 @@ class App extends Component {
               }}
             >
               <h3>Loading</h3>
-              <Spinner />
+              
             </div>
           ) : (
             <Main />
           )}
         </Provider>
-      </Card>
+        </Paper>
     );
   }
 }

@@ -8,20 +8,15 @@ import menus from '../assets/images/Menus.png';
 import programme from '../assets/images/Programme.png';
 import { AppContext } from '../Context/UserContext';
 import 'flexboxgrid';
-import {
-  Alignment,
-  Button,
-  Classes,
-  Colors,
-  H5,
-  Navbar,
-  NavbarDivider,
-  NavbarGroup,
-  NavbarHeading,
-  Switch,
-} from '@blueprintjs/core';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 
-import {app} from './config/base'
+
+import { app } from './config/base';
 
 const { Consumer } = AppContext;
 
@@ -61,7 +56,7 @@ class Header extends Component {
 
   logout = () => {
     app.auth().signOut();
-  }
+  };
 
   render() {
     const { user } = this.props;
@@ -71,31 +66,44 @@ class Header extends Component {
         <Consumer>
           {context => {
             //console.log(context);
-            const btnLog = context.user ? (
-              <Button
-                    className={Classes.MINIMAL}
-                    onClick={() => this.redirect('logout')}>
-              <div className="row middle-sm" style={{ width: 'auto' }}>
-                <div className="col-sm-4">
-                  <img style={{ height: '24px' }} src={programme} />
+            /* const btnLog = context.user ? (
+              <Button className={Classes.MINIMAL} onClick={() => this.redirect('logout')}>
+                <div className="row middle-sm" style={{ width: 'auto' }}>
+                  <div className="col-sm-4">
+                    <img style={{ height: '24px' }} src={programme} />
+                  </div>
+                  <div className="col-sm-8">Logout</div>
                 </div>
-                <div className="col-sm-8">Logout</div>
-              </div>
               </Button>
             ) : (
-              <Button
-                    className={Classes.MINIMAL}
-                    onClick={() => this.redirect('login')}
-                  >
-              <div className="row middle-sm" style={{ width: 'auto' }}>
-                <div className="col-sm-4">
-                  <img style={{ height: '24px' }} src={programme} />
+              <Button className={Classes.MINIMAL} onClick={() => this.redirect('login')}>
+                <div className="row middle-sm" style={{ width: 'auto' }}>
+                  <div className="col-sm-4">
+                    <img style={{ height: '24px' }} src={programme} />
+                  </div>
+                  <div className="col-sm-8">Connexion</div>
                 </div>
-                <div className="col-sm-8">Connexion</div>
-              </div>
               </Button>
-            );
+            ); */
             return (
+              <AppBar>
+                <Toolbar>
+                  <IconButton
+                    style={{marginLeft: "-12",
+                      marginRight: "20"}}
+                    color="inherit"
+                    aria-label="Menu"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Typography variant="title" color="inherit" style={{flexGrow: '1'}}>
+                    News
+                  </Typography>
+                  <Button color="inherit">Login</Button>
+                </Toolbar>
+              </AppBar>
+            );
+            /* 
               <Navbar>
                 {context.user ? (
                 <NavbarGroup align={Alignment.LEFT}>
@@ -133,7 +141,7 @@ class Header extends Component {
                   
                 </NavbarGroup>
               </Navbar>
-            );
+            ); */
           }}
         </Consumer>
       </Aux>
