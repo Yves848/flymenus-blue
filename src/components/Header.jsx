@@ -20,6 +20,9 @@ import {
   NavbarHeading,
   Switch,
 } from '@blueprintjs/core';
+
+import {app} from './config/base'
+
 const { Consumer } = AppContext;
 
 const btnPlat = (
@@ -56,6 +59,10 @@ class Header extends Component {
     this.context.router.history.push(path);
   };
 
+  logout = () => {
+    app.auth().signOut();
+  }
+
   render() {
     const { user } = this.props;
 
@@ -65,19 +72,28 @@ class Header extends Component {
           {context => {
             //console.log(context);
             const btnLog = context.user ? (
+              <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('logout')}>
               <div className="row middle-sm" style={{ width: 'auto' }}>
                 <div className="col-sm-4">
                   <img style={{ height: '24px' }} src={programme} />
                 </div>
                 <div className="col-sm-8">Logout</div>
               </div>
+              </Button>
             ) : (
+              <Button
+                    className={Classes.MINIMAL}
+                    onClick={() => this.redirect('login')}
+                  >
               <div className="row middle-sm" style={{ width: 'auto' }}>
-                <div className="col">
+                <div className="col-sm-4">
                   <img style={{ height: '24px' }} src={programme} />
                 </div>
-                <div className="col">Enregistrement / Connexion</div>
+                <div className="col-sm-8">Connexion</div>
               </div>
+              </Button>
             );
             return (
               <Navbar>
@@ -112,12 +128,9 @@ class Header extends Component {
                   </NavbarGroup>
               }
                 <NavbarGroup align={Alignment.RIGHT}>
-                  <Button
-                    className={Classes.MINIMAL}
-                    onClick={() => this.redirect('login')}
-                  >
+                  
                     {btnLog}
-                  </Button>
+                  
                 </NavbarGroup>
               </Navbar>
             );

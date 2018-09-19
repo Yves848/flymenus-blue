@@ -14,61 +14,110 @@ import {
   Tag,
   Tooltip,
   Classes,
-  Toaster
+  Toaster,
 } from '@blueprintjs/core';
 import { Redirect } from 'react-router-dom';
 import { app, facebookProvider } from '../config/base';
 
 import Aux from '../../hoc/_Aux';
 import { AppContext } from '../../Context/UserContext';
-import './Login.css'
+import './Login.css';
 const { Consumer } = AppContext;
 
-
 class Login extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      redirect: false
-    }
+      redirect: false,
+    };
   }
 
-  authWithEmailPassword = (e) => {
+  authWithEmailPassword = (e, context) => {
     e.preventDefault();
-    console.table([{
-      email: this.emailInput.value,
-      password: this.passwordInput.value
-    }
-    ])
+    console.table([
+      {
+        email: this.emailInput.value,
+        password: this.passwordInput.value,
+      },
+    ]);
 
-  }
+    const email = this.emailInput.value;
+    const password = this.passwordInput.value;
 
-  authWithFacebook = (context) => {
-    console.log("authed with Facebook")
-    app.auth().signInWithPopup(facebookProvider)
-    .then((result, error) => {
-      if (error) {
-        this.toaster.show({ intent: Intent.DANGER, message: "Unable to sing in with Facebook"})
-      } else {
-        context.setUser('Yves')
-       this.setState({ redirect: true})
-        
-      }
-    })
-  }
+    app
+      .auth()
+      .fetchProvidersForEmail(email)
+      .then(providers => {
+        if (providers.length === 0) {
+          // Create User
+          return app.auth().createUserWithEmailAndPassword(email, password);
+        } else if (providers.indexOf('password') === -1) {
+          // they used facebook
+          this.loginForm.reset();
+          this.toaster.show({
+            intent: Intent.WARNING,
+            message: 'Try an alternative Loging',
+          });
+        } else {
+          // Sign user In
+          return app.auth().signInAndRetrieveDataWithEmailAndPassword(email, password);
+        }
+      })
+      .then(response => {
+        console.log('loggin',response);
+        if (response && response.user.email) {
+          this.loginForm.reset();
+          //context.setUser('Yves');
+          response.user.updateProfile({
+            displayName: 'Yves'
+          })
+          this.setState({ redirect: true });
+        }
+      })
+      .catch(error => {
+        this.toaster.show({ intent: Intent.DANGER, message: error.message });
+      });
+  };
 
+  authWithFacebook = context => {
+    console.log('authed with Facebook');
+    app
+      .auth()
+      .signInWithPopup(facebookProvider)
+      .then((result, error) => {
+        if (error) {
+          this.toaster.show({
+            intent: Intent.DANGER,
+            message: 'Unable to sing in with Facebook',
+          });
+        } else {
+          console.log('FB', result)
+          context.setUser('Yves');
+          this.setState({ redirect: true });
+        }
+      })
+      .catch(error => {
+        this.toaster.show({
+          intent: Intent.DANGER,
+          message: error.message,
+        });
+      });
+  };
 
   render() {
     if (this.state.redirect === true) {
-      return <Redirect to="/"></Redirect>
-    } 
+      return <Redirect to="/" />;
+    }
     return (
       <Consumer>
         {context => {
           return (
             <div className="login">
-              <Toaster ref={(element) => { this.toaster = element}}></Toaster>
+              <Toaster
+                ref={element => {
+                  this.toaster = element;
+                }}
+              />
               <Button
                 style={{ width: '100%' }}
                 className={Classes.INTENT_PRIMARY}
@@ -80,7 +129,7 @@ class Login extends Component {
 
               <form
                 onSubmit={event => {
-                  this.authWithEmailPassword(event);
+                  this.authWithEmailPassword(event, context);
                 }}
                 ref={form => {
                   this.loginForm = form;
@@ -94,14 +143,37 @@ class Login extends Component {
                   If you don't have an account already, this form will create one
                 </div>
                 <label className={Classes.LABEL}>
-                EMail
-                  <input style={{width:"100%"}} className={Classes.INPUT} name="email" type="email" ref={(input) => {this.emailInput = input}} placeholder="Email"/>
+                  EMail
+                  <input
+                    style={{ width: '100%' }}
+                    className={Classes.INPUT}
+                    name="email"
+                    type="email"
+                    ref={input => {
+                      this.emailInput = input;
+                    }}
+                    placeholder="Email"
+                  />
                 </label>
                 <label className={Classes.LABEL}>
-                Password
-                  <input style={{width:"100%"}} className={Classes.INPUT} name="password" type="password" ref={(input) => {this.passwordInput = input}} placeholder="Password"/>
+                  Password
+                  <input
+                    style={{ width: '100%' }}
+                    className={Classes.INPUT}
+                    name="password"
+                    type="password"
+                    ref={input => {
+                      this.passwordInput = input;
+                    }}
+                    placeholder="Password"
+                  />
                 </label>
-                <input type="submit" style={{width:"100%"}} className="bp3-button bp3-intent-primary" value="Log In"/>
+                <input
+                  type="submit"
+                  style={{ width: '100%' }}
+                  className="bp3-button bp3-intent-primary"
+                  value="Log In"
+                />
               </form>
             </div>
           );

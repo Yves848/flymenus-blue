@@ -6,6 +6,7 @@ import Plats from '../components/Plats/Plats';
 import Menus from '../components/Menus/Menus';
 import Programmes from '../components/Programmes/Programmes';
 import Login from '../components/Login/Login'
+import Logout from '../components/Logout/Logout'
 
 const Main = () => {
   return(
@@ -15,7 +16,8 @@ const Main = () => {
       <Route path='/plats' component={Plats}/>
       <Route path='/menus' component={Menus}/>
       <Route path='/programmes' component={Programmes}/>
-      <Route path='/login' component={Login} />
+      <Route exact path='/login' component={Login} />
+      <Route exact path='/logout' component={Logout} />
     </Switch>
   )
 }
