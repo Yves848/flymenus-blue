@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { base, app } from '../config/base';
 import { AppContext } from '../../Context/UserContext';
-import { Card, Classes } from '@blueprintjs/core';
+import { Card, Classes, Button, Intent, Alignment } from '@blueprintjs/core';
 import 'flexboxgrid';
 
 const { Consumer } = AppContext;
@@ -19,6 +19,7 @@ const platCardStyle = {
   flex: '1',
   margin: '5px',
 };
+
 
 class Plats extends Component {
   constructor(props) {
@@ -78,7 +79,11 @@ class Plats extends Component {
           className="bp3-card bp3-elevation-0 bp3-interactive"
         >
           <h5>{plat.Nom}</h5>
-          <img src={plat.Image} style={{ minWidth: '230px', maxWidth: '90%', maxHeight: "180px" }} alt="" />
+          <img
+            src={plat.Image}
+            style={{ minWidth: '230px', maxWidth: '90%', maxHeight: '180px' }}
+            alt=""
+          />
         </div>
       );
     });
@@ -88,7 +93,12 @@ class Plats extends Component {
           <a href="#">Plats de {this.state.userName} </a>
         </h5>
         <div className="row">
-          <div className="col-sm-2 col-lg-1">Menu</div>
+          <div className="col-sm-2 col-lg-1" >
+            Menu
+            <div style={{marginTop: "10px"}}>
+              <Button icon="add" fill="true" alignText={Alignment.LEFT}>Ajouter</Button>
+            </div>
+          </div>
           <div className="col-sm-10 col-lg-11">
             Plats
             <div style={platsListStyles}>
