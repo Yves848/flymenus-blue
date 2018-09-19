@@ -52,7 +52,8 @@ class Login extends Component {
         this.toaster.show({ intent: Intent.DANGER, message: "Unable to sing in with Facebook"})
       } else {
         context.setUser('Yves')
-        this.setState({redirect: true})
+       this.setState({ redirect: true})
+        
       }
     })
   }

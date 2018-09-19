@@ -6,7 +6,7 @@ import Aux from './hoc/_Aux';
 import PropTypes from 'prop-types';
 import {Card} from '@blueprintjs/core'
 import { AppContext } from './Context/UserContext';
-import firebase from 'firebase';
+import {app} from './components/config/base'
 
 const { Provider} = AppContext;
 
@@ -28,6 +28,21 @@ class App extends Component {
     console.log(this);
     this.context.router.history.push('login');
   };
+
+  componentWillMount() {
+    this.removeAuthListener = app.auth().onAuthStateChanged((user) => {
+      if (user) {
+        initialState.user = user;
+      }
+      else {
+        initialState.user = null
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    this.removeAuthListener();
+  }
 
   render() {
     return (
