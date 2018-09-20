@@ -74,7 +74,7 @@ class Header extends Component {
             const btnLog = context.user ? (
               <Button
                     className={Classes.MINIMAL}
-                    onClick={() => this.redirect('logout')}>
+                    onClick={() => this.redirect('users')}>
               <div className="row middle-sm" style={{ width: 'auto' }}>
                 <div className="col-sm-4">
                   <img style={{ height: '24px' }} src={programme} />

@@ -68,9 +68,7 @@ class Login extends Component {
         if (response && response.user.email) {
           this.loginForm.reset();
           //context.setUser('Yves');
-          response.user.updateProfile({
-            displayName: 'Yves'
-          })
+          
           this.setState({ redirect: true });
         }
       })
