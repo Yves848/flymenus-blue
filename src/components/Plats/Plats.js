@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { base, app } from "../config/base";
 import { AppContext } from "../../Context/UserContext";
 import PropTypes from 'prop-types';
-import AddPlat from "./AjoutPlat/AjoutPlat";
+import AddPlat from './AjoutPlat/AddPlat'
 import { Link } from 'react-router-dom'
 import { Card, Classes, Button, Intent, Alignment } from "@blueprintjs/core";
 import "flexboxgrid";
@@ -123,7 +123,7 @@ class Plats extends Component {
           handleClose={() => this.handleClose()}
         />
         <h5>
-          <a href="#">Plats de {this.state.userName} </a>
+          <a href="#">Plats de {this.state.userId} </a>
         </h5>
         <div className="row">
           <div className="col-sm-2 col-lg-1">
