@@ -5,12 +5,13 @@ import {
   FormGroup,
   MenuItem,
   Dialog,
-  Classes
+  Classes,
+  Spinner
 } from "@blueprintjs/core";
 
 import { Select } from "@blueprintjs/select";
 import axios from "axios";
-import ImageGrid from '../../Display/ImageGrid';
+import ImageGrid from "../../Display/ImageGrid";
 
 export interface AddPlatProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ const categories = [
   { nom: "Légumes", index: 2 },
   { nom: "Desserts", index: 3 }
 ];
+
+let si: any;
 class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   constructor(props: any) {
     super(props);
@@ -36,39 +39,46 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
       Image: "",
       Categorie: ""
     },
-    images: []
+    images: [],
+    loading: false
   };
 
   componentWillUpdate(nextProps: any, nextState: any) {
     if (nextProps.isOpen !== this.props.isOpen) {
-      console.log('willUpdate',nextProps.isOpen)
-      if (nextProps.isOpen) {
-        this.searchImage("gsxr 1100", 0)
-          .then(images => {
-            console.log('SearchImages',images);
-            this.setState({
-              images: images
-            })
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-      
-        this.setState({
-          isOpen: nextProps.isOpen
-        })
-      
-      
+      console.log("willUpdate", nextProps.isOpen);
+      this.setState({
+        isOpen: nextProps.isOpen,
+        categorie: "",
+        plat:{
+          Nom: "",
+          Image: "",
+          Categorie: ""
+        }
+      });
     }
   }
 
   handleNomChange = (event: any) => {
+    clearTimeout(si);
+    const nom = event.target.value;
     this.setState({
       plat: {
-        Nom: event.target.value
+        Nom: nom
       }
     });
+    si = setTimeout(() => {
+      this.searchImage(nom.toString(), 0)
+        .then(images => {
+          //console.log('SearchImages',images);
+          this.setState({
+            images: images,
+            loading: false
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }, 800);
   };
 
   handleCategorieChange = (event: any) => {
@@ -93,19 +103,23 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
       parameters += "&start=1";
 
       var path = "https://www.googleapis.com/customsearch/v1" + parameters;
-      console.log('search')
-      var images: Array<any> = [];      
+      this.setState({
+        loading: true
+      });
+      var images: Array<any> = [];
       axios
         .get(path)
         .then(response => {
           var result: Array<any> = response.data.items;
-          result.forEach(image => {
-            images.push({
-              url: image.link as string,
-              width: image.image.width as number,
-              height: image.image.height as number
+          if (result) {
+            result.forEach(image => {
+              images.push({
+                url: image.link as string,
+                width: image.image.width as number,
+                height: image.image.height as number
+              });
             });
-          });
+          }
           resolve(images);
         })
         .catch(error => {
@@ -114,7 +128,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     });
   };
 
-  itemRenderer(item: any, handleClick: any) {
+  itemRenderer = (item: any, { handleClick }: any) => {
     return (
       <MenuItem
         key={item.index}
@@ -123,7 +137,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
         shouldDismissPopover={true}
       />
     );
-  }
+  };
 
   handleclick = (item: any) => {
     //this never runs :(
@@ -134,10 +148,11 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   };
 
   render() {
-    const { isOpen, plat } = this.state;
+    const { isOpen, plat, loading } = this.state;
     const { categorie } = this.state;
+
     if (isOpen) {
-      console.log('addplats',this.state.images)
+      //console.log('addplats',this.state.images)
     }
     return (
       <Dialog
@@ -145,6 +160,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
         onClose={this.props.handleClose}
         title="Ajout d'un plat"
         canOutsideClickClose={false}
+        style={{ maxWidth: "80%", width: "840px" }}
       >
         <div className={Classes.DIALOG_BODY}>
           <FormGroup
@@ -173,9 +189,18 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
               />
             </Select>
           </FormGroup>
-          
         </div>
-        <ImageGrid images={this.state.images}></ImageGrid>
+        {loading ? (
+          <div
+            style={{
+              textAlign: "center"
+            }}
+          >
+            <h3>Recherche</h3>
+            <Spinner size={65} />
+          </div>
+        ) : null}
+        <ImageGrid images={this.state.images} />
         <div className={Classes.DIALOG_FOOTER}>
           <Button className={Classes.INTENT_SUCCESS}>Enregistrer</Button>
           <Button className={Classes.INTENT_WARNING} style={{ margin: "10px" }}>
