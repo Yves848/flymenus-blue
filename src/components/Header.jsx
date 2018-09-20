@@ -104,22 +104,24 @@ class Header extends Component {
                   
                   <Button
                     className={Classes.MINIMAL}
-                    onClick={() => this.redirect('programmes')}
+                    onClick={() => this.redirect('/programmes')}
                   >
                     {btnProgrammes}
                   </Button>
                   <Button
                     className={Classes.MINIMAL}
-                    onClick={() => this.redirect('menus')}
+                    onClick={() => this.redirect('/menus')}
                   >
                     {btnMenus}
                   </Button>
+                  <Link to="/plats">
                   <Button
                     className={Classes.MINIMAL}
-                    onClick={() => this.redirect('plats')}
+                    //onClick={() => this.redirect('/plats/all')}
                   >
                     {btnPlat}
                   </Button>
+                  </Link>
                   
                 </NavbarGroup>)
                 :

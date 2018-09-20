@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { base, app } from "../config/base";
 import { AppContext } from "../../Context/UserContext";
+import PropTypes from 'prop-types';
 import AddPlat from "./AjoutPlat/AjoutPlat";
+import { Link } from 'react-router-dom'
 import { Card, Classes, Button, Intent, Alignment } from "@blueprintjs/core";
 import "flexboxgrid";
 
@@ -24,6 +26,7 @@ const platCardStyle = {
 class Plats extends Component {
   constructor(props) {
     super(props);
+    console.log('props',props)
     this.state = {
       userId: "",
       userName: "",
@@ -70,6 +73,10 @@ class Plats extends Component {
     this.setState({
       Plats: Plats
     });
+  };
+
+  redirect = path => {
+    this.context.router.history.push(path);
   };
 
   AjouterPlat = () => {
@@ -140,6 +147,7 @@ class Plats extends Component {
               >
                 Ajouter
               </Button>
+              
             </div>
           </div>
           <div className="col-sm-10 col-lg-11">
@@ -157,5 +165,10 @@ class Plats extends Component {
     );
   }
 }
+
+Plats.contextTypes = {
+  router: PropTypes.object,
+};
+
 
 export default Plats;

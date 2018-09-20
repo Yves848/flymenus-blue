@@ -14,7 +14,7 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@blueprintjs/core@^3.6.1":
+"@blueprintjs/core@^3.6.0", "@blueprintjs/core@^3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.6.1.tgz#d168423b1c38964e50c2cc8aef4cba8076bfe01a"
   dependencies:
@@ -33,6 +33,14 @@
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.1.0.tgz#7bf137bd30eb74a4d35d4e03e736898ef9ab6025"
   dependencies:
+    classnames "^2.2"
+    tslib "^1.9.0"
+
+"@blueprintjs/select@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.2.0.tgz#743fdafd6b4d3140473f45cba452bd937338b419"
+  dependencies:
+    "@blueprintjs/core" "^3.6.0"
     classnames "^2.2"
     tslib "^1.9.0"
 
