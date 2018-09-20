@@ -86,6 +86,7 @@ class Plats extends Component {
   };
 
   handleClose = () => {
+    console.log('close')
     this.setState({
       isAjoutPlatOpened: false
     });
