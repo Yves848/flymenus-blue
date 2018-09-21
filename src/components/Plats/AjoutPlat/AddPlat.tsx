@@ -25,6 +25,8 @@ import legumesImg from '../../../assets/images/32x32/legumes.png';
 
 export interface AddPlatProps {
   isOpen: boolean;
+  Plat: any;
+  Mode: number;
   handleClose(): void;
   handleAjout(plat: any): void;
 }
@@ -60,24 +62,61 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
 
   componentWillUpdate(nextProps: any, nextState: any) {
     if (nextProps.isOpen !== this.props.isOpen) {
-      console.log('willUpdate', nextProps.isOpen);
-      if (nextProps.isOpen) {
-        this.setState({
+      console.log('willUpdate', nextProps);
+      console.log('nextProps.Plat.Image', nextProps.Plat.Image);
+      let newState;
+
+      if (nextProps.Mode === 1) {
+        newState = {
+          plat: {
+            Nom: nextProps.Plat.Nom,
+            Image: nextProps.Plat.Image,
+            Categorie: nextProps.Plat.Categorie,
+          },
+          categorie: nextProps.Plat.Categorie,
+          images: [nextProps.Plat.Image],
+          imgIndex: 0,
           isOpen: nextProps.isOpen,
-          categorie: '',
+        };
+      } else {
+        newState = {
           plat: {
             Nom: '',
             Image: '',
             Categorie: '',
           },
+          categorie: '',
           images: [noImage],
           imgIndex: 0,
-        });
+          isOpen: nextProps.isOpen,
+        };
       }
-      else {
+
+      if (nextProps.isOpen) {
         this.setState({
-          isOpen: nextProps.isOpen
-        })
+          ...newState,
+        });
+        this.searchImage(nextProps.Plat.Nom, 0)
+          .then(images => {
+            console.log('update',images)
+            //console.log(images.className)
+            const tmpImg = images;
+            tmpImg[0].url = nextProps.Plat.Image;
+            
+            this.setState({
+                images: tmpImg,
+              
+                loading: false,
+              
+            });
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        this.setState({
+          isOpen: nextProps.isOpen,
+        });
       }
     }
   }
@@ -95,7 +134,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     si = setTimeout(() => {
       this.searchImage(nom.toString(), 0)
         .then(images => {
-          //console.log('SearchImages',images);
+          console.log('handleNomChange',images);
           this.setState({
             images: images,
             loading: false,
@@ -150,6 +189,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           } else {
             images.push(noImage);
           }
+          console.log('resolve',images)
           resolve(images);
         })
         .catch(error => {
@@ -179,9 +219,8 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
       categorie: item.nom,
       plat: {
         ...plat,
-        Categorie: item.nom
-      }
-
+        Categorie: item.nom,
+      },
     });
   };
 
@@ -201,10 +240,9 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     const plat = this.state.plat;
 
     if (this.state.images.length > 1) {
-      plat.Image = this.state.images[this.state.imgIndex]
-    }
-    else {
-      plat.Image = "";
+      plat.Image = this.state.images[this.state.imgIndex];
+    } else {
+      plat.Image = '';
     }
     this.props.handleAjout(this.state.plat);
   };
@@ -318,7 +356,11 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
               </Button>
             </div>
             <div className="col">
-              <Button className={Classes.INTENT_WARNING} style={{ margin: '10px' }}>
+              <Button
+                className={Classes.INTENT_WARNING}
+                style={{ margin: '10px' }}
+                onClick={() => this.props.handleClose()}
+              >
                 Annuler
               </Button>
             </div>

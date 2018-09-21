@@ -32,6 +32,7 @@ class Plats extends Component {
       userName: '',
       Plats: [],
       isAjoutPlatOpened: false,
+      Mode: 0
     };
   }
 
@@ -113,8 +114,15 @@ class Plats extends Component {
     this.setState({
       Plats: Plats
     })
-  
+  }
 
+  handleEdit = (plat,i) => {
+    console.log(plat)
+    this.setState({
+      currentPlat: plat,
+      Mode: 1,
+      isAjoutPlatOpened: true
+    })
   }
 
   render() {
@@ -144,7 +152,7 @@ class Plats extends Component {
             </div>
             <div className="row around-sm around-lg" style={{marginTop:"5px", padding: "5px"}}>
               <div className="col">
-                <Button icon="edit" intent={Intent.PRIMARY}></Button>
+                <Button icon="edit" intent={Intent.PRIMARY} onClick={() => this.handleEdit(plat,i)}></Button>
               </div>
               <div className="col">
                 <Button icon="delete" intent={Intent.DANGER} onClick={() => this.handleDelete(i)}></Button>
@@ -163,9 +171,11 @@ class Plats extends Component {
           isOpen={this.state.isAjoutPlatOpened}
           handleClose={() => this.handleClose()}
           handleAjout={this.handleAjout}
+          Plat={this.state.currentPlat}
+          Mode={this.state.Mode}
         />
         <h5>
-          <a href="#">Plats de {this.state.userId} </a>
+          <a href="#">Plats de {this.state.userName} </a>
         </h5>
         <div className="row">
           <div className="col-sm-2 col-lg-1">
