@@ -84,12 +84,7 @@ class Utilisateurs extends Component {
           <a href="#">Utilisateurs</a>
         </h5>
         <p>Gestion des Utilisateurs</p>
-        <div className="row" style={{ height: "40px" }}>
-          <div className="col-lg-2 col-sm-2">Id</div>
-          <div className="col-lg-10 col-sm-10">
-            <EditableText value={utilisateur.id} disabled />
-          </div>
-        </div>
+        
         <div className="row" style={{ height: "40px" }}>
           <div className="col-lg-2 col-sm-2">Nom</div>
           <div className="col-lg-10 col-sm-10">
@@ -110,7 +105,14 @@ class Utilisateurs extends Component {
           </div>
         </div>
 
-        {utilisateur.mailConfirmed ? "Oui" : "Non"}
+        <div className="row" style={{ height: "40px" }}>
+          <div className="col-lg-2 col-sm-2">eMail Confirmé :</div>
+          <div className="col-lg-10 col-sm-10">
+            <EditableText value={utilisateur.mailConfirmed ? "Oui" : "Non"} disabled />
+          </div>
+        </div>
+
+        
         <br />
         <Link to="/logout">Logout</Link>
       </div>

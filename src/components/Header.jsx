@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import menu from '../assets/images/menu.png';
 import plat from '../assets/images/dish.png';
-import menus from '../assets/images/Menus.png';
-import programme from '../assets/images/Programme.png';
+import menus from '../assets/images/64x64/Order-history-icon.png';
+import programme from '../assets/images/64x64/Calendar-selection-day-icon.png';
+import loginImg from '../assets/images/64x64/Login.png';
+import keysImg from '../assets/images/64x64/Keys.png';
 import { AppContext } from '../Context/UserContext';
 import 'flexboxgrid';
 import {
@@ -77,9 +79,9 @@ class Header extends Component {
                     onClick={() => this.redirect('users')}>
               <div className="row middle-sm" style={{ width: 'auto' }}>
                 <div className="col-sm-4">
-                  <img style={{ height: '24px' }} src={programme} />
+                  <img style={{ height: '24px' }} src={keysImg} />
                 </div>
-                <div className="col-sm-8">Logout</div>
+                <div className="col-sm-8">Utilisateurs</div>
               </div>
               </Button>
             ) : (
@@ -89,7 +91,7 @@ class Header extends Component {
                   >
               <div className="row middle-sm" style={{ width: 'auto' }}>
                 <div className="col-sm-4">
-                  <img style={{ height: '24px' }} src={programme} />
+                  <img style={{ height: '24px' }} src={loginImg} />
                 </div>
                 <div className="col-sm-8">Connexion</div>
               </div>
