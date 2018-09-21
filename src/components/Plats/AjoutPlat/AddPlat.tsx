@@ -26,6 +26,7 @@ import legumesImg from '../../../assets/images/32x32/legumes.png';
 export interface AddPlatProps {
   isOpen: boolean;
   handleClose(): void;
+  handleAjout(plat: any): void;
 }
 
 export interface AddPlatState {}
@@ -54,31 +55,40 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     },
     images: [noImage],
     loading: false,
-    imgIndex: 0
+    imgIndex: 0,
   };
 
   componentWillUpdate(nextProps: any, nextState: any) {
     if (nextProps.isOpen !== this.props.isOpen) {
       console.log('willUpdate', nextProps.isOpen);
-      this.setState({
-        isOpen: nextProps.isOpen,
-        categorie: '',
-        plat: {
-          Nom: '',
-          Image: '',
-          Categorie: '',
-        },
-        images: [noImage],
-        imgIndex: 0
-      });
+      if (nextProps.isOpen) {
+        this.setState({
+          isOpen: nextProps.isOpen,
+          categorie: '',
+          plat: {
+            Nom: '',
+            Image: '',
+            Categorie: '',
+          },
+          images: [noImage],
+          imgIndex: 0,
+        });
+      }
+      else {
+        this.setState({
+          isOpen: nextProps.isOpen
+        })
+      }
     }
   }
 
   handleNomChange = (event: any) => {
     clearTimeout(si);
     const nom = event.target.value;
+    const plat = this.state.plat;
     this.setState({
       plat: {
+        ...plat,
         Nom: nom,
       },
     });
@@ -98,8 +108,10 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   };
 
   handleCategorieChange = (event: any) => {
+    const plat = this.state.plat;
     this.setState({
       plat: {
+        ...plat,
         Categorie: event.target.value,
       },
     });
@@ -162,23 +174,40 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   handleclick = (item: any) => {
     //this never runs :(
     console.log('clicked', item);
+    const plat = this.state.plat;
     this.setState({
       categorie: item.nom,
+      plat: {
+        ...plat,
+        Categorie: item.nom
+      }
+
     });
   };
 
-  changeImage = (direction:number) => {
+  changeImage = (direction: number) => {
     let imgIndex = this.state.imgIndex;
     if (direction === 0) {
-      imgIndex = ((imgIndex-1) < 0 ? this.state.images.length-1 : imgIndex-1 )
-      
+      imgIndex = imgIndex - 1 < 0 ? this.state.images.length - 1 : imgIndex - 1;
     } else {
-      imgIndex = ((imgIndex+1) > this.state.images.length-1 ? 0 : imgIndex+1 )
+      imgIndex = imgIndex + 1 > this.state.images.length - 1 ? 0 : imgIndex + 1;
     }
     this.setState({
-      imgIndex: imgIndex
-    })
-  }
+      imgIndex: imgIndex,
+    });
+  };
+
+  handleAjout = () => {
+    const plat = this.state.plat;
+
+    if (this.state.images.length > 1) {
+      plat.Image = this.state.images[this.state.imgIndex]
+    }
+    else {
+      plat.Image = "";
+    }
+    this.props.handleAjout(this.state.plat);
+  };
 
   render() {
     const { isOpen, plat, loading, imgIndex, images } = this.state;
@@ -189,16 +218,25 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     if (imgLength > 1) {
       footer = (
         <div>
-          <Button icon="arrow-left" onClick={() => {this.changeImage(0)}}></Button>
-          <Button icon="arrow-right" onClick={() => {this.changeImage(1)}}></Button>
+          <Button
+            icon="arrow-left"
+            onClick={() => {
+              this.changeImage(0);
+            }}
+          />
+          <Button
+            icon="arrow-right"
+            onClick={() => {
+              this.changeImage(1);
+            }}
+          />
         </div>
-      )
+      );
     }
+
     const image = this.state.images[imgIndex].url
       ? this.state.images[imgIndex].url
       : this.state.images[imgIndex];
-    
-
 
     if (isOpen) {
       //console.log('addplats',this.state.images)
@@ -215,24 +253,31 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           <div className="row">
             <div className="col-sm-6 col-lg-4">
               {loading ? (
-                <div className="bp3-card bp3-elevation-4"
+                <div
+                  className="bp3-card bp3-elevation-4"
                   style={{
                     textAlign: 'center',
-                    height: "150px"
+                    height: '150px',
                   }}
                 >
                   <h3>Recherche</h3>
                   <Spinner size={65} />
                 </div>
               ) : (
-                <div className="bp3-card bp3-elevation-4" style={{
-                  textAlign: 'center',
-                  height: "150px"
-                }}>
-                  <img src={image} alt="" style={{ width: '100%', maxHeight: "115px", height: "115px" }} />
+                <div
+                  className="bp3-card bp3-elevation-4"
+                  style={{
+                    textAlign: 'center',
+                    height: '150px',
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt=""
+                    style={{ width: '100%', maxHeight: '115px', height: '115px' }}
+                  />
                   {footer}
                 </div>
-                
               )}
             </div>
             <div className="col-sm-6 col-lg-8">
@@ -263,10 +308,21 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
         </div>
 
         <div className={Classes.DIALOG_FOOTER}>
-          <Button className={Classes.INTENT_SUCCESS}>Enregistrer</Button>
-          <Button className={Classes.INTENT_WARNING} style={{ margin: '10px' }}>
-            Annuler
-          </Button>
+          <div className="row between-lg between-sm">
+            <div className="col">
+              <Button
+                className={Classes.INTENT_SUCCESS}
+                onClick={() => this.handleAjout()}
+              >
+                Enregistrer
+              </Button>
+            </div>
+            <div className="col">
+              <Button className={Classes.INTENT_WARNING} style={{ margin: '10px' }}>
+                Annuler
+              </Button>
+            </div>
+          </div>
         </div>
       </Dialog>
     );
