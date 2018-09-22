@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { app, base } from "../../components/config/base";
 import { Link } from "react-router-dom";
-import { EditableText, Dialog, Alert, Intent } from "@blueprintjs/core";
+import { EditableText, Dialog, Alert, Intent,Card,H2,Button } from "@blueprintjs/core";
 
 class Utilisateurs extends Component {
   constructor(props) {
@@ -67,23 +67,20 @@ class Utilisateurs extends Component {
     return (
       <div>
         <Alert
-          cancelButtonText="Cancel"
-          confirmButtonText="Move to Trash"
-          icon="trash"
-          intent={Intent.DANGER}
+          cancelButtonText="Annuler"
+          confirmButtonText="Confirmer"
+          icon="help"
+          intent={Intent.PRIMARY}
           isOpen={this.state.confirmVisible}
           onCancel={() => this.handleAlertClose(false)}
           onConfirm={() => this.handleAlertClose(true)}
         >
           <p>
-            Are you sure you want to move <b>filename</b> to Trash? You will be
-            able to restore it later, but it will become private to you.
+            Ettes-vous sûr de vouloir renomer l'utilisateur {utilisateur.nom} ?
           </p>
         </Alert>
-        <h5>
-          <a href="#">Utilisateurs</a>
-        </h5>
-        <p>Gestion des Utilisateurs</p>
+        <Card className="bp3-elevation-4" style={{marginLeft: "15%", marginRight: "15%", marginTop: "25px"}}>
+        <div><H2 className=" bp3-tag bp3-intent-primary">Paramètres utilisateur</H2></div>
         
         <div className="row" style={{ height: "40px" }}>
           <div className="col-lg-2 col-sm-2">Nom</div>
@@ -114,7 +111,8 @@ class Utilisateurs extends Component {
 
         
         <br />
-        <Link to="/logout">Logout</Link>
+        <Link to="/logout"><Button icon="log-out" className="bp3-intent-danger">Déconnexion</Button></Link>
+        </Card>
       </div>
     );
   }

@@ -27,8 +27,9 @@ export interface AddPlatProps {
   isOpen: boolean;
   Plat: any;
   Mode: number;
+  index: number;
   handleClose(): void;
-  handleAjout(plat: any): void;
+  handleAjout(plat: any, index: number): void;
 }
 
 export interface AddPlatState {}
@@ -57,14 +58,14 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     },
     images: [noImage],
     loading: false,
-    imgIndex: 0,
+    imgIndex: 0
   };
 
   componentWillUpdate(nextProps: any, nextState: any) {
     if (nextProps.isOpen !== this.props.isOpen) {
-      console.log('willUpdate', nextProps);
-      console.log('nextProps.Plat.Image', nextProps.Plat.Image);
-      let newState;
+      //console.log('[AddPlat] willUpdate', nextProps);
+      //console.log('nextProps.Plat.Image', nextProps.Plat.Image);
+      let newState:any;
 
       if (nextProps.Mode === 1) {
         newState = {
@@ -96,23 +97,31 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
         this.setState({
           ...newState,
         });
+        if (nextProps.Mode === 1) {
         this.searchImage(nextProps.Plat.Nom, 0)
           .then(images => {
-            console.log('update',images)
-            //console.log(images.className)
-            const tmpImg = images;
-            tmpImg[0].url = nextProps.Plat.Image;
+            //console.log('[AddPlat] update',images)
+            let idx = images.indexOf(nextProps.Plat.Image);
+            let tmpImg;
+            if (idx === -1) {
+              tmpImg = images.splice(0,0,nextProps.Plat.Image);
+              idx = 0;
+            }
+            else {
+              tmpImg = images;
+            }
+            
             
             this.setState({
                 images: tmpImg,
-              
                 loading: false,
-              
+                imgIndex: idx
             });
           })
           .catch(error => {
             console.error(error);
           });
+        }
       } else {
         this.setState({
           isOpen: nextProps.isOpen,
@@ -129,6 +138,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
       plat: {
         ...plat,
         Nom: nom,
+        imgIndex: 0
       },
     });
     si = setTimeout(() => {
@@ -157,7 +167,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   };
 
   searchImage = (key: string, page: number) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<Array<any>>((resolve, reject) => {
       var CSE_API_KEY = '007439388879951561867:3ragl0fkhpm';
       var CSE_ID = 'AIzaSyDYvQx76ZvFawwKOaDeGqRClb2RJlIcsXM';
 
@@ -180,16 +190,12 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           var result: Array<any> = response.data.items;
           if (result) {
             result.forEach(image => {
-              images.push({
-                url: image.link as string,
-                width: image.image.width as number,
-                height: image.image.height as number,
-              });
+              images.push(image.link);
             });
           } else {
             images.push(noImage);
           }
-          console.log('resolve',images)
+          //console.log('resolve',images)
           resolve(images);
         })
         .catch(error => {
@@ -212,8 +218,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   };
 
   handleclick = (item: any) => {
-    //this never runs :(
-    console.log('clicked', item);
     const plat = this.state.plat;
     this.setState({
       categorie: item.nom,
@@ -244,7 +248,8 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     } else {
       plat.Image = '';
     }
-    this.props.handleAjout(this.state.plat);
+    
+    this.props.handleAjout(plat, this.props.index);
   };
 
   render() {
@@ -270,20 +275,18 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           />
         </div>
       );
-    }
+    };
 
-    const image = this.state.images[imgIndex].url
-      ? this.state.images[imgIndex].url
-      : this.state.images[imgIndex];
+    const image = this.state.images[imgIndex];
 
     if (isOpen) {
-      //console.log('addplats',this.state.images)
+      //console.log('[Addplats] render',this.state)
     }
     return (
       <Dialog
         isOpen={isOpen}
         onClose={this.props.handleClose}
-        title="Ajout d'un plat"
+        title={this.props.Mode === 0 ? "Ajout d'un plat" : `Edition de ${this.state.plat.Nom}`}
         canOutsideClickClose={false}
         style={{ maxWidth: '80%', width: '640px' }}
       >
