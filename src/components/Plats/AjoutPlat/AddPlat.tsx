@@ -63,8 +63,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
 
   componentWillUpdate(nextProps: any, nextState: any) {
     if (nextProps.isOpen !== this.props.isOpen) {
-      //console.log('[AddPlat] willUpdate', nextProps);
-      //console.log('nextProps.Plat.Image', nextProps.Plat.Image);
       let newState:any;
 
       if (nextProps.Mode === 1) {
@@ -100,7 +98,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
         if (nextProps.Mode === 1) {
         this.searchImage(nextProps.Plat.Nom, 0)
           .then(images => {
-            //console.log('[AddPlat] update',images)
             let idx = images.indexOf(nextProps.Plat.Image);
             let tmpImg;
             if (idx === -1) {
@@ -144,7 +141,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     si = setTimeout(() => {
       this.searchImage(nom.toString(), 0)
         .then(images => {
-          console.log('handleNomChange',images);
           this.setState({
             images: images,
             loading: false,
@@ -195,7 +191,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           } else {
             images.push(noImage);
           }
-          //console.log('resolve',images)
           resolve(images);
         })
         .catch(error => {
@@ -280,7 +275,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
     const image = this.state.images[imgIndex];
 
     if (isOpen) {
-      //console.log('[Addplats] render',this.state)
     }
     return (
       <Dialog
@@ -328,7 +322,6 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
                   onChange={this.handleNomChange}
                   placeholder=""
                   value={plat.Nom}
-                  //round
                 />
               </FormGroup>
               <FormGroup label="Catégorie" labelFor="Categorie" labelInfo="">
@@ -348,7 +341,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
           </div>
         </div>
 
-        <div className={Classes.DIALOG_FOOTER}>
+        <div className={Classes.DIALOG_FOOTER} style={{marginTop: "7px"}}>
           <div className="row between-lg between-sm">
             <div className="col">
               <Button

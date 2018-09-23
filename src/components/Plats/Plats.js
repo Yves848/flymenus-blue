@@ -26,7 +26,6 @@ const platCardStyle = {
 class Plats extends Component {
   constructor(props) {
     super(props);
-    console.log("props", props);
     this.state = {
       userId: "",
       userName: "",
@@ -45,7 +44,6 @@ class Plats extends Component {
         asArray: true
       })
       .then(data => {
-        console.log(data);
         data.forEach(plat => {
           this.addPlats(plat);
         });
@@ -70,7 +68,6 @@ class Plats extends Component {
   }
 
   addPlats = plat => {
-    console.log('[Plats] addPlats : ',plat)
     const Plats = [...this.state.Plats];
     Plats.push(plat);
 
@@ -93,16 +90,12 @@ class Plats extends Component {
   };
 
   handleClose = () => {
-    console.log("close");
     this.setState({
       isAjoutPlatOpened: false
     });
   };
 
   handleAjout = (plat, index) => {
-    /* console.log('[Plats] handleAjout : plat',plat);
-    console.log('[Plats] handleAjout : index',index);
- */
     if (index === -1) {
       this.addPlats({
         Nom: plat.Nom,
@@ -116,7 +109,6 @@ class Plats extends Component {
       const plats = this.state.Plats.map((p,i)=>{
         if (i === index) 
         {
-          //console.log('return',plat)
           return plat;
         }
         return p;
@@ -133,14 +125,12 @@ class Plats extends Component {
       return i !== index;
     });
 
-    //console.log(Plats);
     this.setState({
       Plats: Plats
     });
   };
 
   handleEdit = (plat, i) => {
-    //console.log('[Plats] handleEdit',plat);
     this.setState({
       currentPlat: plat,
       Mode: 1,
@@ -155,7 +145,6 @@ class Plats extends Component {
     let cards = null;
     if (Plats && Plats.length > 0) {
       cards = Plats.map((plat, i) => {
-        //console.log('render',plat);
         return (
           <div
             key={i}
@@ -164,22 +153,23 @@ class Plats extends Component {
           >
             <div />
             <h5>{plat.Nom}</h5>
-            <div className="col">
-              <div className="row">
+            <div className="row center-lg center-sm">
+              <div className="col middle-lg middle-sm" style={{height: "200px"}}>
                 <img
                   className="bp3-elevation-4"
                   src={plat.Image}
                   style={{
                     minWidth: "230px",
                     maxWidth: "90%",
-                    maxHeight: "180px"
+                    maxHeight: "180px",
+                    top: "25%"
                   }}
                   alt=""
                 />
               </div>
             </div>
             <div
-              className="row around-sm around-lg"
+              className="row between-sm between-lg bottom-lg bottom-sm"
               style={{ marginTop: "5px", padding: "5px" }}
             >
               <div className="col">
