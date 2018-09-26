@@ -128,7 +128,6 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
                 onActiveItemChange={this.handleActiveItemChange}
                 itemRenderer={renderPlat}
                 itemPredicate={filterFilm}
-                //itemListPredicate={filterFilms}
                 onItemSelect={this.handleClick}
                 noResults={<MenuItem disabled={true} text="Pas de résultat." />}
                 inputValueRenderer={this.renderValue}
