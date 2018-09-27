@@ -26,8 +26,11 @@ export interface AjoutProgrammeState {
   activePlat: IPlat;
 }
 
+
+const PlatSuggest = Suggest.ofType<IPlat>();
+
 const filterFilm: ItemPredicate<IPlat> = (query, plat) => {
-  const text = `${plat.Nom}`;
+  const text = `${plat.Key}. ${plat.Nom}`;
   return text.toLocaleLowerCase().indexOf(query.toLowerCase()) >= 0;
 };
 
@@ -44,18 +47,21 @@ const filterFilm: ItemPredicate<IPlat> = (query, plat) => {
   return result.slice(0,10)
 }
  */
-const renderPlat: ItemRenderer<IPlat> = (Plat, { handleClick, modifiers}) => {
-  if (!modifiers.matchesPredicate){
+const renderPlat: ItemRenderer<IPlat> = (Plat, { handleClick, modifiers }) => {
+  if (!modifiers.matchesPredicate) {
     return null;
   }
   const text = `${Plat.Key}. ${Plat.Nom}`;
-  return <MenuItem 
-    key={Plat.Key} 
-    active={modifiers.active}
-    disabled={modifiers.disabled}
-    label={Plat.Categorie}
-    onClick={handleClick} 
-    text={text} />;
+  return (
+    <MenuItem
+      key={Plat.Key}
+      active={modifiers.active}
+      disabled={modifiers.disabled}
+      label={Plat.Categorie}
+      onClick={handleClick}
+      text={text}
+    />
+  );
 };
 class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgrammeState> {
   public activeItem: IPlat;
@@ -69,45 +75,43 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
       plats.push(p);
     });
 
-    
     this.state = {
       isOpen: false,
       Plats: plats,
-      plat: "",
-      activePlat: Plats[0]
+      plat: '',
+      activePlat: Plats[0],
     };
   }
   componentWillUpdate(nextProps: AjoutProgrammeProps) {
     if (nextProps.controleAjout.isOpen !== this.props.controleAjout.isOpen) {
       const plats: IPlat[] = [];
       this.props.plats.forEach((plat, i) => {
-      let p: IPlat = { ...plat, Key: i + 1 };
-      plats.push(p);
-    });
+        let p: IPlat = { ...plat, Key: i + 1 };
+        plats.push(p);
+      });
 
-    //console.log(plats)
+      //console.log(plats)
       this.setState({
         isOpen: nextProps.controleAjout.isOpen,
-        Plats: plats
+        Plats: plats,
       });
     }
   }
 
   handleClick = (item: IPlat) => {
     this.setState({
-      plat: item.Nom
-    })
+      plat: item.Nom,
+    });
   };
 
   renderValue = (item: IPlat) => item.Nom;
-  
 
   handleActiveItemChange = (item: IPlat) => {
-    console.log(item)
+    console.log(item);
     this.setState({
-      activePlat: item
-    })
-  }
+      activePlat: item,
+    });
+  };
 
   render() {
     const { isOpen } = this.state;
@@ -122,7 +126,7 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
         <div className={Classes.DIALOG_BODY}>
           <div className="row">
             <div className="col">
-              <Suggest
+              <PlatSuggest
                 items={this.state.Plats}
                 activeItem={this.state.activePlat}
                 onActiveItemChange={this.handleActiveItemChange}
@@ -131,7 +135,7 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
                 onItemSelect={this.handleClick}
                 noResults={<MenuItem disabled={true} text="Pas de résultat." />}
                 inputValueRenderer={this.renderValue}
-                popoverProps={{minimal: true, usePortal: true}}
+                popoverProps={{ minimal: true, usePortal: true }}
               />
             </div>
           </div>
