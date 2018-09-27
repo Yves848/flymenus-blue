@@ -12,16 +12,9 @@ import {
 import { Select } from '@blueprintjs/select';
 import axios from 'axios';
 //import ImageGrid from '../../Display/ImageGrid';
-
-import feculentsImg from '../../../assets/images/32x32/feculents.png';
-import fruitsImg from '../../../assets/images/32x32/fruits.png';
-import fromageImg from '../../../assets/images/32x32/fromage.png';
-import dessertImg from '../../../assets/images/32x32/dessert.png';
-import * as viandeImg from '../../../assets/images/32x32/viande.png';
-import * as volailleImg from '../../../assets/images/32x32/poulet.png';
+import {categories} from '../../config/categories';
 import noImage from '../../../assets/images/No-image-available.jpg';
 
-import legumesImg from '../../../assets/images/32x32/legumes.png';
 
 export interface AddPlatProps {
   isOpen: boolean;
@@ -33,15 +26,7 @@ export interface AddPlatProps {
 }
 
 export interface AddPlatState {}
-const categories = [
-  { nom: 'Viande', index: 0, img: viandeImg },
-  { nom: 'Féculent', index: 1, img: feculentsImg },
-  { nom: 'Légume', index: 2, img: legumesImg },
-  { nom: 'Dessert', index: 3, img: dessertImg },
-  { nom: 'Fruit', index: 4, img: fruitsImg },
-  { nom: 'Volaille', index: 5, img: volailleImg },
-  { nom: 'Fromage', index: 6, img: fromageImg },
-];
+
 
 let si: any;
 class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
@@ -202,9 +187,7 @@ class AddPlat extends React.Component<AddPlatProps, AddPlatState> {
   itemRenderer = (item: any, { handleClick }: any) => {
     return (
       <div key={item.index} className="row" style={{ marginLeft: '5px' }}>
-        <div className="col">
-          <img src={item.img} style={{ width: '24px', height: '24px' }} alt="image" />
-        </div>
+        
         <div className="col">
           <MenuItem text={item.nom} onClick={handleClick} shouldDismissPopover={true} />
         </div>

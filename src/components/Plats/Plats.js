@@ -1,47 +1,60 @@
-import React, { Component } from "react";
-import { base, app } from "../config/base";
-import { AppContext } from "../../Context/UserContext";
-import PropTypes from "prop-types";
-import AddPlat from "./AjoutPlat/AddPlat";
-import { Link } from "react-router-dom";
-import { Card, Classes, Button, Intent, Alignment } from "@blueprintjs/core";
-import "flexboxgrid";
+import React, { Component } from 'react';
+import { base, app } from '../config/base';
+import { AppContext } from '../../Context/UserContext';
+import PropTypes from 'prop-types';
+import AddPlat from './AjoutPlat/AddPlat';
+import { Link } from 'react-router-dom';
+import {
+  Card,
+  Classes,
+  Button,
+  Intent,
+  Alignment,
+  Tag,
+  Icon,
+  Popover,
+  Position,
+  Tooltip,
+  H1,
+} from '@blueprintjs/core';
+import Avatar from 'react-avatar';
+import 'flexboxgrid';
 
 const { Consumer } = AppContext;
 
 const platsListStyles = {
-  display: "flex",
-  flexDirection: "column",
-  flexWrap: "wrap",
-  justifyContent: "Center"
+  display: 'flex',
+  flexDirection: 'column',
+  flexWrap: 'wrap',
+  justifyContent: 'Center',
 };
 
 const platCardStyle = {
-  maxWidth: "30%",
-  minWidth: "250px",
-  flex: "1",
-  margin: "5px"
+  maxWidth: '30%',
+  minWidth: '250px',
+  flex: '1',
+  margin: '5px',
 };
 
 class Plats extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: "",
-      userName: "",
+      userId: '',
+      userName: '',
       Plats: [],
       isAjoutPlatOpened: false,
       Mode: 0,
       index: -1,
-      importVisible: false
+      importVisible: false,
     };
   }
 
   fillDB = () => {
     base
-      .fetch("Plats/-LDLPjLrdRXEVqI_Jf-y", {
+      .fetch('Plats/-LDLPjLrdRXEVqI_Jf-y', {
         context: this,
-        asArray: true
+        asArray: true,
       })
       .then(data => {
         data.forEach(plat => {
@@ -58,12 +71,12 @@ class Plats extends Component {
 
     this.setState({
       userId: user.uid,
-      userName: user.displayName
+      userName: user.displayName,
     });
 
-    this.platsRef = base.syncState(user.uid + "/Plats", {
+    this.platsRef = base.syncState(user.uid + '/Plats', {
       context: this,
-      state: "Plats"
+      state: 'Plats',
     });
   }
 
@@ -72,7 +85,7 @@ class Plats extends Component {
     Plats.push(plat);
 
     this.setState({
-      Plats: Plats
+      Plats: Plats,
     });
   };
 
@@ -85,13 +98,13 @@ class Plats extends Component {
       currentPlat: {},
       index: -1,
       Mode: 0,
-      isAjoutPlatOpened: true
+      isAjoutPlatOpened: true,
     });
   };
 
   handleClose = () => {
     this.setState({
-      isAjoutPlatOpened: false
+      isAjoutPlatOpened: false,
     });
   };
 
@@ -102,20 +115,19 @@ class Plats extends Component {
         Image: plat.Image,
         Categorie: plat.Categorie,
         ImageSearch: plat.Nom,
-        Rating: 0
+        Rating: 0,
       });
     } else {
-      // mettre à jour le plat ... 
-      const plats = this.state.Plats.map((p,i)=>{
-        if (i === index) 
-        {
+      // mettre à jour le plat ...
+      const plats = this.state.Plats.map((p, i) => {
+        if (i === index) {
           return plat;
         }
         return p;
-      })
+      });
       this.setState({
-        Plats: plats
-      })
+        Plats: plats,
+      });
     }
     this.handleClose();
   };
@@ -126,7 +138,7 @@ class Plats extends Component {
     });
 
     this.setState({
-      Plats: Plats
+      Plats: Plats,
     });
   };
 
@@ -135,7 +147,7 @@ class Plats extends Component {
       currentPlat: plat,
       Mode: 1,
       index: i,
-      isAjoutPlatOpened: true
+      isAjoutPlatOpened: true,
     });
   };
 
@@ -143,7 +155,74 @@ class Plats extends Component {
     const { Plats } = this.state;
     let importVisible = false;
     let cards = null;
+    let categs = [];
+    let iCateg = 0;
+
     if (Plats && Plats.length > 0) {
+      const platsByCateg = Plats.map((plat, i) => {
+        iCateg = categs
+          .map(categ => {
+            return categ.nom;
+          })
+          .indexOf(plat.Categorie);
+        if (iCateg === -1) {
+          iCateg =
+            categs.push({
+              nom: plat.Categorie,
+              plats: [],
+            }) - 1;
+          //console.log(iCateg)
+        }
+        //console.log('categs',categs[iCateg])
+        categs[iCateg].plats.push({ ...plat, key: i });
+      });
+
+      console.log(categs);
+      cards = categs.map((categ, i) => {
+        return (
+          <Card key={i} elevation={3} style={{ marginBottom: '15px' }}>
+            <div style={{ width: '100%', color: 'white', backgroundColor: 'blue' }}>
+              {categ.nom}
+            </div>
+            {categ.plats.map((plat, i) => {
+              const colband = (i%2 === 0 ? '#fcf9ef' : 'white');
+              return (
+                <div
+                  key={i}
+                  style={{
+                    gridColumn: '1',
+                    margin: '2px',
+                    backgroundColor: (i%2 === 0 ? '#fcf9ef' : 'white')
+                  }}
+                >
+                  <Popover position={Position.LEFT}>
+                    <Tooltip content={<p>Suppression</p>} position={Position.LEFT}>
+                      <Button
+                        minimal
+                        icon="delete"
+                        intent={Intent.DANGER}
+                        onClick={() => this.handleEdit(plat.key)}
+                      />
+                    </Tooltip>
+                  </Popover>
+                  <Popover position={Position.RIGHT}>
+                    <Tooltip content={<p>Edition</p>} position={Position.RIGHT}>
+                      <Button
+                        icon="edit"
+                        minimal
+                        intent={Intent.PRIMARY}
+                        onClick={() => this.handleEdit(plat, plat.key)}
+                      />
+                    </Tooltip>
+                  </Popover>
+                  <Avatar src={plat.Image} round size={32} /> {plat.Nom}
+                </div>
+              );
+            })}
+          </Card>
+        );
+      });
+      /* 
       cards = Plats.map((plat, i) => {
         return (
           <div
@@ -189,7 +268,7 @@ class Plats extends Component {
             </div>
           </div>
         );
-      });
+      });*/
     } else {
       cards = null;
       importVisible = true;
@@ -210,14 +289,14 @@ class Plats extends Component {
         </h5>
         <div className="row">
           <div className="col-sm-2 col-lg-1">
-            <div style={{ marginTop: "10px" }}>
+            <div style={{ marginTop: '10px' }}>
               {importVisible ? (
                 <Button
                   icon="import"
                   fill="true"
                   alignText={Alignment.LEFT}
                   onClick={() => this.fillDB()}
-                  style={{ marginBottom: "10px" }}
+                  style={{ marginBottom: '10px' }}
                 >
                   Importer
                 </Button>
@@ -233,16 +312,8 @@ class Plats extends Component {
               </Button>
             </div>
           </div>
-          <div className="col-sm-10 col-lg-11">
-            <div style={platsListStyles}>
-              <div
-                className="row"
-                style={{ maxHeight: "80vh", overflow: "auto" }}
-              >
-                {cards}
-              </div>
-            </div>
-          </div>
+
+          <div className="col-sm-10 col-lg-11">{cards}</div>
         </div>
       </div>
     );
@@ -250,7 +321,7 @@ class Plats extends Component {
 }
 
 Plats.contextTypes = {
-  router: PropTypes.object
+  router: PropTypes.object,
 };
 
 export default Plats;

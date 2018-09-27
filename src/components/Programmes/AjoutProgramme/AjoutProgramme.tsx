@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Dialog, Classes, MenuItem } from '@blueprintjs/core';
+import { Dialog, Classes, MenuItem, Radio, RadioGroup, Button } from '@blueprintjs/core';
 import { Suggest, ItemRenderer, ItemPredicate } from '@blueprintjs/select';
 import Plats from '../../Plats/Plats';
+import * as _C from '../../config/constantes';
 
 export interface IPlat {
   Nom: string;
@@ -17,6 +18,7 @@ export interface AjoutProgrammeProps {
   plats: Array<IPlat>;
   handleClose(): void;
   handleAjout(programme: any, index: number): void;
+  handleSaveRepas(repas: any): void;
 }
 
 export interface AjoutProgrammeState {
@@ -24,8 +26,9 @@ export interface AjoutProgrammeState {
   Plats: Array<IPlat>;
   plat: string;
   activePlat: IPlat;
+  Heure: any;
+  programme: any;
 }
-
 
 const PlatSuggest = Suggest.ofType<IPlat>();
 
@@ -80,21 +83,30 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
       Plats: plats,
       plat: '',
       activePlat: Plats[0],
+      Heure: null,
+      programme: null,
     };
   }
   componentWillUpdate(nextProps: AjoutProgrammeProps) {
     if (nextProps.controleAjout.isOpen !== this.props.controleAjout.isOpen) {
-      const plats: IPlat[] = [];
-      this.props.plats.forEach((plat, i) => {
-        let p: IPlat = { ...plat, Key: i + 1 };
-        plats.push(p);
-      });
-
-      //console.log(plats)
-      this.setState({
-        isOpen: nextProps.controleAjout.isOpen,
-        Plats: plats,
-      });
+      if (nextProps.controleAjout.isOpen) {
+        const plats: IPlat[] = [];
+        this.props.plats.forEach((plat, i) => {
+          let p: IPlat = { ...plat, Key: i + 1 };
+          plats.push(p);
+        });
+        console.log(nextProps.controleAjout.Heure);
+        //console.log(plats)
+        this.setState({
+          isOpen: nextProps.controleAjout.isOpen,
+          Heure: nextProps.controleAjout.Heure.key,
+          Plats: plats,
+        });
+      } else {
+        this.setState({
+          isOpen: nextProps.controleAjout.isOpen,
+        });
+      }
     }
   }
 
@@ -107,9 +119,47 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
   renderValue = (item: IPlat) => item.Nom;
 
   handleActiveItemChange = (item: IPlat) => {
-    console.log(item);
+    //console.log(item);
     this.setState({
       activePlat: item,
+    });
+  };
+
+  handleHeureChange = (event: React.FormEvent<HTMLElement>) => {
+    //console.log((event.target as HTMLInputElement).value);
+    this.setState({
+      Heure: (event.target as HTMLInputElement).value,
+    });
+  };
+
+  handleSaveRepas = () => {
+    //console.log('save Repas',this.state.Heure )
+    //console.log('save Repas', this.state.activePlat);
+    let heure: any;
+    switch (this.state.Heure) {
+      case _C.GOUTER.key: {
+        heure = _C.GOUTER;
+        break;
+      }
+      case _C.MATIN.key: {
+        heure = _C.MATIN;
+        break;
+      }
+      case _C.MIDI.key: {
+        heure = _C.MIDI;
+        break;
+      }
+      case _C.SOIR.key: {
+        heure = _C.SOIR;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    this.props.handleSaveRepas({
+      Programme: this.state.activePlat,
+      Heure: heure,
     });
   };
 
@@ -126,6 +176,17 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
         <div className={Classes.DIALOG_BODY}>
           <div className="row">
             <div className="col">
+              <RadioGroup
+                label=""
+                onChange={this.handleHeureChange}
+                selectedValue={this.state.Heure}
+                inline
+              >
+                <Radio label="Matin" value={_C.MATIN.key} />
+                <Radio label="Midi" value={_C.MIDI.key} />
+                <Radio label="Goûter" value={_C.GOUTER.key} />
+                <Radio label="Soir" value={_C.SOIR.key} />
+              </RadioGroup>
               <PlatSuggest
                 items={this.state.Plats}
                 activeItem={this.state.activePlat}
@@ -137,6 +198,27 @@ class AjoutProgramme extends React.Component<AjoutProgrammeProps, AjoutProgramme
                 inputValueRenderer={this.renderValue}
                 popoverProps={{ minimal: true, usePortal: true }}
               />
+            </div>
+          </div>
+        </div>
+        <div className={Classes.DIALOG_FOOTER} style={{ marginTop: '7px' }}>
+          <div className="row between-lg between-sm">
+            <div className="col">
+              <Button
+                className={Classes.INTENT_SUCCESS}
+                onClick={() => this.handleSaveRepas()}
+              >
+                Enregistrer
+              </Button>
+            </div>
+            <div className="col">
+              <Button
+                className={Classes.INTENT_WARNING}
+                style={{ margin: '10px' }}
+                onClick={() => this.props.handleClose()}
+              >
+                Annuler
+              </Button>
             </div>
           </div>
         </div>

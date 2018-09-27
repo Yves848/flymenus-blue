@@ -45,6 +45,7 @@
     "raf": "3.4.0",
     "re-base": "^4.0.0",
     "react": "^16.5.1",
+    "react-avatar": "^3.4.4",
     "react-day-picker": "^7.2.4",
     "react-dev-utils": "^5.0.2",
     "react-dom": "^16.5.1",

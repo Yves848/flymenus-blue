@@ -64,6 +64,7 @@ class Programmes extends Component {
     menuProgress: 0,
     controleAjout: {
       isOpen: false,
+      Heure: null,
       progrogramme: {},
     },
   };
@@ -87,7 +88,9 @@ class Programmes extends Component {
   addProgramme = (programme, Heure) => {
     const Programmes = [...this.state.Programmes];
     const jour = moment(this.state.jour).format('YYYYMMDD');
-
+    console.log('addProgramme',jour);
+    console.log('addProgramme',Heure)
+    console.log('addProgramme',programme);
     let ref = base
       .push(this.state.userId + '/Programmes/' + jour + '/' + Heure, {
         data: programme,
@@ -198,6 +201,7 @@ class Programmes extends Component {
     this.setState({
       controleAjout: {
         isOpen: true,
+        Heure: Heure,
         programme: {},
       },
     });
@@ -234,6 +238,18 @@ class Programmes extends Component {
     });
   };
 
+  handleSaveRepas = (repas) => {
+    //console.log(repas)
+
+    this.addProgramme(repas.Programme, repas.Heure.key);
+    
+    this.setState({
+      controleAjout: {
+        isOpen: false,
+      },
+    });
+  }
+
   render() {
     const { jour } = this.state;
     const { Programmes, loading } = this.state;
@@ -249,6 +265,7 @@ class Programmes extends Component {
         <AjoutProgramme
           controleAjout={this.state.controleAjout}
           handleClose={() => this.handleCloseAjout()}
+          handleSaveRepas={this.handleSaveRepas}
           plats={this.state.Plats}
         />
         <h5>
